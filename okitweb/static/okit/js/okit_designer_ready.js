@@ -155,6 +155,7 @@ $(document).ready(function() {
 
     // TODO: Integrate Estimate Calculator
     /*
+     */
     d3.select(d3Id('console_right_bar')).append('label')
         .attr('id', 'toggle_cost_estimate_button')
         .attr('class', 'okit-pointer-cursor')
@@ -162,6 +163,8 @@ $(document).ready(function() {
             let open = $(this).hasClass('okit-bar-panel-displayed');
             slideRightPanelsOffScreen();
             if (!open) {
+                $(jqId(COST_ESTIMATE_PANEL)).empty();
+                $(jqId(COST_ESTIMATE_PANEL)).text('Calculating.........');
                 $(jqId(COST_ESTIMATE_PANEL)).removeClass('hidden');
                 $(this).addClass('okit-bar-panel-displayed');
                 $(jqId('right_column_dragbar')).removeClass('hidden');
@@ -171,7 +174,6 @@ $(document).ready(function() {
             checkRightColumn();
         })
         .text('Cost Estimate');
-     */
 
     console.info('Added Designer Handlers');
 

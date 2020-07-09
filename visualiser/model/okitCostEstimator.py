@@ -13,6 +13,7 @@ __module__ = "ociPricing"
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 
 from common.okitLogging import getLogger
+from model import okit_price_v1
 
 # Configure logging
 logger = getLogger()
@@ -24,5 +25,6 @@ class OCIPriceEstimator(object):
 
     def estimate(self):
         logger.info('Generate Pricing Estimate for OKIT Json')
+        self.cost_estimate = okit_price_v1.load_json(self.okit_json)
         return self.cost_estimate
 

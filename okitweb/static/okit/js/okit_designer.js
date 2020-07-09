@@ -763,5 +763,99 @@ function displayValidationResults(results) {
  */
 function displayPricingResults(results) {
     console.info('Displaying Pricing Results');
-    $(jqId(COST_ESTIMATE_PANEL)).text(JSON.stringify(results));
+    $(jqId(COST_ESTIMATE_PANEL)).empty();
+    let summary = results.pop();
+
+    d3.select(d3Id("cost_estimate_panel")).append('p')
+        .attr('class', 'okit-cost-small-print')
+        .text("The values displayed are purely for estimation purposes only and are generated from our public pricing pages. For accurate costing you will need to you Oracle OCI Account Manager.");
+    tabulateHorizontal("cost_estimate_panel", results, ["RESOURCENAME", "PAYG", "MONTHLY_FLEX"]);
+    d3.select(d3Id("cost_estimate_panel")).append('p').text("Summary").style('font-weight', 'bold');
+    tabulateVertical("cost_estimate_panel", summary, ["PAYG", "MONTHLY_FLEX", "YEARLY_PAYG", "YEARLY_FLEX"]);
+}
+
+function tabulateVertical(element, data, columns) {
+    let table = d3.select(d3Id(element)).append('div')
+        .attr('class', 'table okit-table okit-properties-table');
+
+    let tbody = table.append('div')
+        .attr('class', 'tbody');
+
+    for (let key in data) {
+        if (columns.includes(key)) {
+            let formatter = new Intl.NumberFormat('en-US', {
+                style: 'currency',
+                currency: 'USD'
+            });
+            row = tbody.append("div").attr('class', 'tr');
+            row.append("div")
+                .attr('class', 'td')
+                .text(titleCase(replaceAll(key, '_', ' ')));
+            row.append("div")
+                .attr('class', 'td')
+                .style('text-align', 'right')
+                .text(formatter.format(data[key]));
+        }
+    }
+}
+
+function tabulateHorizontal(element, data, columns) {
+    let table = d3.select(d3Id(element)).append('div')
+        .attr('class', 'table okit-table okit-properties-table');
+
+    let thead = table.append('div').attr('class', 'thead');
+    let tbody = table.append('div').attr('class', 'tbody');
+
+    // append the header row
+    thead.append('div')
+        .attr('class', 'tr')
+        .selectAll('div')
+        .data(columns).enter()
+        .append('div')
+        .attr('class', 'th')
+        .text(function (column) {
+            return titleCase(replaceAll(column, '_', ' '));
+        });
+
+
+    // create a row for each object in the data
+    let rows = tbody.selectAll('div')
+        .data(data)
+        .enter()
+        .append('div')
+        .attr('class', 'tr')
+
+
+    // create a cell in each row for each column
+    let cells = rows.selectAll('div')
+        .data(function (row) {
+            return columns.map(function (column) {
+                if (typeof row[column] == 'number') {
+                    let formatter = new Intl.NumberFormat('en-US', {
+                        style: 'currency',
+                        currency: 'USD'
+                    });
+                    return {
+                        column: column,
+                        value: formatter.format(row[column]),
+                        align: 'right'
+                    };
+                } else
+                    return {
+                        column: column,
+                        value: titleCase(replaceAll(row[column], '_', ' ')),
+                        align: 'left'
+                    };
+            });
+        })
+        .enter()
+        .append('div')
+        .attr('class', 'td')
+        .text(function (d) {
+            return d.value;
+        })
+        .style("text-align", function (d) {
+            return d.align;
+        });
+    return table;
 }

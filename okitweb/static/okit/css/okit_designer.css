@@ -294,3 +294,31 @@ rect.highlight {
     stroke-width: 3;
     stroke-dasharray: none;
 }
+
+/*
+** Pricing
+ */
+.okit-value-proposition {
+    opacity: 1;
+    height: 100%;
+    width: 100%;
+    font-family: Consolas,monaco,monospace;
+    overflow-x: scroll;
+    overflow-y: scroll;
+}
+
+.okit-cost-estimate {
+    opacity: 1;
+    height: 100%;
+    width: 100%;
+    font-family: Consolas,monaco,monospace;
+    overflow-x: scroll;
+    overflow-y: scroll;
+}
+
+.okit-cost-small-print {
+    font-size: small;
+    font-weight: bold;
+    font-style: italic;
+    font-family: Arial;
+}

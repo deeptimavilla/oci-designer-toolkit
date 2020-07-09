@@ -42,6 +42,7 @@ RUN yum install -y \
         markupsafe==1.1.1 \
         oci==2.6.0 \
         pyyaml==5.2 \
+        requests \
         werkzeug==0.16.0 \
         cryptography==2.8 \
 # Create Workspace
