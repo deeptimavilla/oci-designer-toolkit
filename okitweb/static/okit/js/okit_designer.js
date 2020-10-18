@@ -914,10 +914,6 @@ function handleLoadFromGIT(evt) {
         git_repository_filename_select.append('option').attr('value', git_setting['url']).text(git_setting['label']);
     }
 
-    //git_repository_filename_select.append('option').attr('value', 'select').text('Select');
-    //git_repository_filename_select.append('option').attr('value', 'git@orahub.oci.oraclecorp.com:pdit-automation-tta/gitpythontest2.git').text('ORAHUB-gitpythontest2');
-
-
     // Load Files - GitFilename
     tr = tbody.append('div') .attr('class', 'tr');
     tr.append('div') .attr('class', 'td') .text('Select GIT File Name');
