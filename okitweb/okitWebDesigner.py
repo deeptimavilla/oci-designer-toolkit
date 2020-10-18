@@ -17,6 +17,12 @@ import shutil
 import tempfile
 import time
 import urllib
+import git
+import glob, os, shutil
+import ast
+
+from git import Git
+from git import Repo
 from flask import Blueprint
 from flask import render_template
 from flask import request
@@ -62,6 +68,17 @@ def readConfigFileSections(config_file='~/.oci/config'):
     config_sections.extend(config.sections())
     logger.info('Config Sections {0!s:s}'.format(config_sections))
     return config_sections
+
+def readConfigFileSettings(config_file='~/.oci/settings'):
+    logger.debug('Setting File {0!s:s}'.format(config_file))
+    abs_config_file = os.path.expanduser(config_file)
+    logger.debug('Setting File {0!s:s}'.format(abs_config_file))
+    config = configparser.ConfigParser()
+    config.read(abs_config_file)
+    repo_list = {}
+    if 'GIT_REPOSITORIES' in config:
+        repo_list = ast.literal_eval(config.get("GIT_REPOSITORIES", "git_repo"))
+    return repo_list
 
 def getConfigFileValue(section, key, config_file='~/.oci/config'):
     logger.debug('Config File {0!s:s}'.format(config_file))
@@ -290,6 +307,16 @@ def configSections():
         return 'Unknown Method', 500
 
 
+@bp.route('config/appsettings', methods=(['GET']))
+def appSettings():
+    if request.method == 'GET':
+        config_settings = {"settings": readConfigFileSettings()}
+        logger.info('Config Settings {0!s:s}'.format(config_settings))
+        return config_settings
+    else:
+        return 'Unknown Method', 500
+
+
 @bp.route('config/region/<string:section>', methods=(['GET']))
 def configRegion(section):
     if request.method == 'GET':
@@ -318,4 +345,42 @@ def validateJson():
         return json.dumps(result, sort_keys=False, indent=2, separators=(',', ': '))
     else:
         return '404'
+
+@bp.route('loadfromgit', methods=(['POST']))
+def loadfromgit():
+    logger.debug('JSON     : {0:s}'.format(str(request.json)))
+    if request.method == 'POST':
+        try:
+            destination = '/okit/okitweb/static/okit/templates/git'
+            git_url = request.json['git_repository']
+            logger.debug('JSON     : {0:s}'.format(str(git_url)))
+
+            #username = "your-username"
+            #password = "your-password"
+            #remote = f"https://{username}:{password}@git_url"
+            #Repo.clone_from(remote, destination)
+
+            repo = Repo.clone_from(git_url, destination, branch='master')
+            repo.remotes.origin.pull()
+            okitgitsource = '/okit/okitweb/static/okit/templates/okit_git/'
+            files = glob.iglob(os.path.join(destination, "*.json"))
+
+            if not os.path.exists(okitgitsource):
+                os.mkdir(okitgitsource)
+
+            for file in files:
+                if os.path.isfile(file):
+                    shutil.copy2(file, okitgitsource)
+            os.system("rm -rf " + destination)
+
+            files = list(glob.iglob(os.path.join(okitgitsource, "*.json")))
+            files_list = [f.replace("okit/okitweb/", "") for f in files]
+            logger.debug('JSON     : {0:s}'.format(str(request.json)))
+            logger.debug('Files Walk : {0!s:s}'.format(files_list))
+            result = {"fileslist": files_list}
+            logger.info(result)
+            return json.dumps(result)
+        except Exception as e:
+            logger.exception(e)
+            return str(e), 500
 

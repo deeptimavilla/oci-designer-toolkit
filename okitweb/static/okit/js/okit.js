@@ -43,6 +43,7 @@ class OkitOCIConfig {
     load() {
         let me = this;
         $.getJSON('config/sections', function(resp) {$.extend(true, me, resp);console.info('Sections Response ' + JSON.stringify(resp));});
+        $.getJSON('config/appsettings', function(resp) {$.extend(true, me, resp);console.info('Settings Response ' + JSON.stringify(resp));});
         console.info(this);
     }
 

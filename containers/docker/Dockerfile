@@ -30,6 +30,7 @@ RUN yum install -y \
  && yum install -y \
         python36 \
         python3-pip \
+        git \
 #        python36-pyyaml \
 #        python36-oci-sdk \
 #        rh-nginx114 \
@@ -38,6 +39,7 @@ RUN yum install -y \
  && python3 -m pip install --upgrade pip==20.0.2 \
 # Install required python modules
  && pip3 install --no-cache-dir \
+        gitpython==3.1.8 \
         flask==1.1.1 \
         gunicorn==20.0.4 \
         oci==2.6.0 \
