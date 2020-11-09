@@ -243,6 +243,10 @@ def generate(language):
         use_vars = request.json.get("use_variables", True)
         try:
             destination_dir = tempfile.mkdtemp();
+            gitpush_flag = False
+            if language == 'terraformtogit':
+                gitpush_flag = True
+                language = 'terraform'
             if language == 'terraform':
                 generator = OCITerraformGenerator(template_root, destination_dir, request.json, use_vars=use_vars)
             elif language == 'ansible':
@@ -255,6 +259,37 @@ def generate(language):
             generator.writeFiles()
             zipname = generator.createZipArchive(os.path.join(destination_dir, language), "/tmp/okit-{0:s}".format(str(language)))
             logger.info('Zipfile : {0:s}'.format(str(zipname)))
+
+            if gitpush_flag:
+                git_url = request.json['git_repository']
+                git_file_name = request.json['git_repository_filename']
+                git_commit_msg = request.json['git_repository_commitmsg']
+                destination = '/okit/okitweb/static/okit/templates/tmpgit'
+
+                repo = Repo.clone_from(git_url, destination, branch='master')
+                repo.remotes.origin.pull()
+
+                copyfrom = destination_dir+'/terraform'
+                copyto = destination +'/' + git_file_name
+
+                if os.path.exists(copyto):
+                    return "Name already exists"
+                else:
+                    os.makedirs(copyto)
+
+                for item in os.listdir(copyfrom):
+                    s = os.path.join(copyfrom, item)
+                    d = os.path.join(copyto, item)
+                    shutil.copy2(s, d)
+
+                repo.index.add(copyto)
+                repo.index.commit("commit changes using gitpython code:" + git_commit_msg)
+                origin = repo.remote('origin')
+                origin.push()
+
+                os.system("rm -rf " + destination)
+                shutil.rmtree(destination_dir)
+                return "Terraform template upload to GIT Repository successfully.."
             shutil.rmtree(destination_dir)
             filename = os.path.split(zipname)
             logger.info('Split Zipfile : {0:s}'.format(str(filename)))
