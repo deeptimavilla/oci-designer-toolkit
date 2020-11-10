@@ -20,7 +20,7 @@
                 $.ajax({
                     type: 'get',
                     url: "{{ url_for('static', filename='okit/palette/' + palette_icon['svg']) }}",
-                    dataType: 'xml',
+                    dataType: 'xml',Ansible
                     success: function(xml) {
                         console.info("{{ 'Loaded ' + palette_icon['svg'] }}");
                         let g = $(xml).find("g");
@@ -151,7 +151,7 @@
                 </ul>
             </li>
             <li><a id="generate-terraform-menu-item" class="parent-item" href="javascript:void(0)" onclick="handleGenerateTerraformOption()">Terraform</a></li>
-            <li><a id="generate-ansible-menu-item"   class="parent-item" href="javascript:void(0)" onclick="handleGenerateAnsible()">Ansible</a></li>
+            <li><a id="generate-ansible-menu-item"   class="parent-item" href="javascript:void(0)" onclick="handleGenerateAnsibleOption()">Ansible</a></li>
             <li><a id="file-export-rm-menu-item"  class="parent-item" href="javascript:void(0)" onclick="handleExportToResourceManager()">Resource Manager</a></li>
             <li><a id="file-export-rm-gitlab-menu-item"  class="parent-item" href="javascript:void(0)" onclick="handleExportToResourceManagerGitLab()">Resource Manager VCS</a></li>
         </ul>

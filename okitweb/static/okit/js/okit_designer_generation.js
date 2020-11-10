@@ -41,9 +41,9 @@ function handleGenerateTerraformOption(e) {
         .attr('value', 'LOCAL')
         .attr('checked', 'checked')
         .on('change', () => {
-            $(jqId('export_terraform_box_repo')).addClass('collapsed');
-            $(jqId('export_terraform_box_filename')).addClass('collapsed');
-            $(jqId('export_terraform_box_commitmsg')).addClass('collapsed');
+            $(jqId('export_box_repo')).addClass('collapsed');
+            $(jqId('export_box_filename')).addClass('collapsed');
+            $(jqId('export_box_commitmsg')).addClass('collapsed');
         });
     div.append('label')
         .attr('for', 'export_terraform_local')
@@ -55,16 +55,16 @@ function handleGenerateTerraformOption(e) {
         .attr('name', 'export_terraform_name')
         .attr('value', 'GITREPO')
         .on('change', () => {
-            $(jqId('export_terraform_box_repo')).removeClass('collapsed');
-            $(jqId('export_terraform_box_filename')).removeClass('collapsed');
-            $(jqId('export_terraform_box_commitmsg')).removeClass('collapsed');
+            $(jqId('export_box_repo')).removeClass('collapsed');
+            $(jqId('export_box_filename')).removeClass('collapsed');
+            $(jqId('export_box_commitmsg')).removeClass('collapsed');
         });
     div.append('label')
         .attr('for', 'export_terraform_repo')
         .text('Git Repository');
 
 
-    tr = tbody.append('div').attr('class', 'tr collapsed').attr('id', 'export_terraform_box_repo');
+    tr = tbody.append('div').attr('class', 'tr collapsed').attr('id', 'export_box_repo');
     tr.append('div').attr('class', 'td').text('Git Repository URL:');
     tr.append('div').attr('class', 'td').append('select')
         .attr('id', 'git_repository')
@@ -78,14 +78,14 @@ function handleGenerateTerraformOption(e) {
         git_repository_filename_select.append('option').attr('value', git_setting['url']).text(git_setting['label']);
     }
 
-    tr = tbody.append('div').attr('class', 'tr collapsed').attr('id', 'export_terraform_box_filename');
+    tr = tbody.append('div').attr('class', 'tr collapsed').attr('id', 'export_box_filename');
     tr.append('div').attr('class', 'td').text('File Name:');
     tr.append('div').attr('class', 'td').append('input')
         .attr('class', 'okit-input')
         .attr('id', 'git_repository_filename')
         .attr('type', 'text');
 
-    tr = tbody.append('div').attr('class', 'tr collapsed').attr('id', 'export_terraform_box_commitmsg');
+    tr = tbody.append('div').attr('class', 'tr collapsed').attr('id', 'export_box_commitmsg');
     tr.append('div').attr('class', 'td').text('Description:');
     tr.append('div').attr('class', 'td').append('input')
         .attr('class', 'okit-input')
@@ -167,7 +167,124 @@ function generateTerraform(results) {
         validationFailedNotification();
     }
 }
+function handleGenerateAnsibleOption(e) {
+    $(jqId('modal_dialog_title')).text('Select Option to Export Ansible Files');
+    $(jqId('modal_dialog_body')).empty();
+    $(jqId('modal_dialog_footer')).empty();
+    let table = d3.select(d3Id('modal_dialog_body')).append('div').append('div')
+        .attr('id', 'load_to_git')
+        .attr('class', 'table okit-table okit-modal-dialog-table');
+    let tbody = table.append('div').attr('class', 'tbody');
+    let tr = tbody.append('div').attr('class', 'tr');
+    tr.append('div').attr('class', 'td').text('Select Export Option:');
 
+    div = tr.append('div')
+        .attr('class', 'okit-horizontal-radio');
+    div.append('input')
+        .attr('type','radio')
+        .attr('id', 'export_ansible_local')
+        .attr('name', 'export_ansible_name')
+        .attr('value', 'LOCAL')
+        .attr('checked', 'checked')
+        .on('change', () => {
+            $(jqId('export_box_repo')).addClass('collapsed');
+            $(jqId('export_box_filename')).addClass('collapsed');
+            $(jqId('export_box_commitmsg')).addClass('collapsed');
+        });
+    div.append('label')
+        .attr('for', 'export_ansible_local')
+        .text('Local');
+    // Apply
+    div.append('input')
+        .attr('type','radio')
+        .attr('id', 'export_ansible_repo')
+        .attr('name', 'export_ansible_name')
+        .attr('value', 'GITREPO')
+        .on('change', () => {
+            $(jqId('export_box_repo')).removeClass('collapsed');
+            $(jqId('export_box_filename')).removeClass('collapsed');
+            $(jqId('export_box_commitmsg')).removeClass('collapsed');
+        });
+    div.append('label')
+        .attr('for', 'export_ansible_repo')
+        .text('Git Repository');
+
+
+    tr = tbody.append('div').attr('class', 'tr collapsed').attr('id', 'export_box_repo');
+    tr.append('div').attr('class', 'td').text('Git Repository URL:');
+    tr.append('div').attr('class', 'td').append('select')
+        .attr('id', 'git_repository')
+        .append('option')
+        .attr('value', 'select')
+        .text('Select');
+
+    let git_repository_filename_select = d3.select(d3Id('git_repository'));
+
+    for (let git_setting of okitOciConfig.settings) {
+        git_repository_filename_select.append('option').attr('value', git_setting['url']).text(git_setting['label']);
+    }
+
+    tr = tbody.append('div').attr('class', 'tr collapsed').attr('id', 'export_box_filename');
+    tr.append('div').attr('class', 'td').text('File Name:');
+    tr.append('div').attr('class', 'td').append('input')
+        .attr('class', 'okit-input')
+        .attr('id', 'git_repository_filename')
+        .attr('type', 'text');
+
+    tr = tbody.append('div').attr('class', 'tr collapsed').attr('id', 'export_box_commitmsg');
+    tr.append('div').attr('class', 'td').text('Description:');
+    tr.append('div').attr('class', 'td').append('input')
+        .attr('class', 'okit-input')
+        .attr('id', 'git_repository_commitmsg')
+        .attr('type', 'text');
+
+    // Submit
+    let save_button = d3.select(d3Id('modal_dialog_footer')).append('div').append('button')
+        .attr('id', 'export_ansible_option_id')
+        .attr('type', 'button')
+        .text('Submit');
+    save_button.on("click", handleGenerateAnsibleOptionProceed);
+    $(jqId('modal_dialog_wrapper')).removeClass('hidden');
+}
+function handleGenerateAnsibleOptionProceed(e) {
+    okitJsonModel.export_ansible_name = $('input[name=export_ansible_name]:checked').val();
+    if (okitJsonModel.export_ansible_name == 'LOCAL') {
+        handleGenerateAnsible()
+        $(jqId('modal_dialog_wrapper')).addClass('hidden');
+    } else {
+        okitJsonModel.git_repository = $(jqId('git_repository')).val();
+        okitJsonModel.git_repository_filename = $(jqId('git_repository_filename')).val();
+        okitJsonModel.git_repository_commitmsg = $(jqId('git_repository_commitmsg')).val();
+
+        hideNavMenu();
+        okitJsonModel.validate(generateAnsibleToRepo);
+    }
+}
+function generateAnsibleToRepo(results) {
+    if (results.valid) {
+        let requestJson = JSON.parse(JSON.stringify(okitJsonModel));
+        console.info(okitSettings);
+        requestJson.use_variables = okitSettings.is_variables;
+        $.ajax({
+            type: 'post',
+            url: 'generate/ansibletogit',
+            dataType: 'text',
+            contentType: 'application/json',
+            data: JSON.stringify(requestJson),
+            success: function(resp) {
+                console.info('Response : ' + resp);
+                $(jqId('modal_dialog_wrapper')).addClass('hidden');
+                alert(resp);
+            },
+            error: function(xhr, status, error) {
+                console.info('Status : '+ status)
+                console.info('Error : '+ error)
+            }
+        });
+    } else {
+        validationFailedNotification();
+    }
+}
 function handleGenerateAnsible(e) {
     hideNavMenu();
     okitJsonModel.validate(generateAnsible);

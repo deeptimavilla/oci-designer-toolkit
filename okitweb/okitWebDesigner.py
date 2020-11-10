@@ -247,6 +247,9 @@ def generate(language):
             if language == 'terraformtogit':
                 gitpush_flag = True
                 language = 'terraform'
+            if language == 'ansibletogit':
+                gitpush_flag = True
+                language = 'ansible'
             if language == 'terraform':
                 generator = OCITerraformGenerator(template_root, destination_dir, request.json, use_vars=use_vars)
             elif language == 'ansible':
@@ -269,7 +272,7 @@ def generate(language):
                 repo = Repo.clone_from(git_url, destination, branch='master')
                 repo.remotes.origin.pull()
 
-                copyfrom = destination_dir+'/terraform'
+                copyfrom = destination_dir+'/'+language
                 copyto = destination +'/' + git_file_name
 
                 if os.path.exists(copyto):
@@ -283,13 +286,13 @@ def generate(language):
                     shutil.copy2(s, d)
 
                 repo.index.add(copyto)
-                repo.index.commit("commit changes using gitpython code:" + git_commit_msg)
+                repo.index.commit("commit changes from okit:" + git_commit_msg)
                 origin = repo.remote('origin')
                 origin.push()
 
                 os.system("rm -rf " + destination)
                 shutil.rmtree(destination_dir)
-                return "Terraform template upload to GIT Repository successfully.."
+                return language.capitalize()+" template upload to GIT Repository successfully.."
             shutil.rmtree(destination_dir)
             filename = os.path.split(zipname)
             logger.info('Split Zipfile : {0:s}'.format(str(filename)))
