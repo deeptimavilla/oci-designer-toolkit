@@ -22,7 +22,7 @@ function saveZip(url, filename="") {
 }
 
 function handleGenerateTerraformOption(e) {
-    $(jqId('modal_dialog_title')).text('Select Option to Export Terraform Files');
+    $(jqId('modal_dialog_title')).text('Export Terraform');
     $(jqId('modal_dialog_body')).empty();
     $(jqId('modal_dialog_footer')).empty();
     let table = d3.select(d3Id('modal_dialog_body')).append('div').append('div')
@@ -30,7 +30,7 @@ function handleGenerateTerraformOption(e) {
         .attr('class', 'table okit-table okit-modal-dialog-table');
     let tbody = table.append('div').attr('class', 'tbody');
     let tr = tbody.append('div').attr('class', 'tr');
-    tr.append('div').attr('class', 'td').text('Select Export Option:');
+    tr.append('div').attr('class', 'td').text('Destination:');
 
     div = tr.append('div')
         .attr('class', 'okit-horizontal-radio');
@@ -61,11 +61,11 @@ function handleGenerateTerraformOption(e) {
         });
     div.append('label')
         .attr('for', 'export_terraform_repo')
-        .text('Git Repository');
+        .text('Git');
 
 
     tr = tbody.append('div').attr('class', 'tr collapsed').attr('id', 'export_box_repo');
-    tr.append('div').attr('class', 'td').text('Git Repository URL:');
+    tr.append('div').attr('class', 'td').text('Repository:');
     tr.append('div').attr('class', 'td').append('select')
         .attr('id', 'git_repository')
         .append('option')
@@ -75,11 +75,11 @@ function handleGenerateTerraformOption(e) {
     let git_repository_filename_select = d3.select(d3Id('git_repository'));
 
     for (let git_setting of okitOciConfig.settings) {
-        git_repository_filename_select.append('option').attr('value', git_setting['url']).text(git_setting['label']);
+        git_repository_filename_select.append('option').attr('value', git_setting['url']+'*'+git_setting['branch']).text(git_setting['label']);
     }
 
     tr = tbody.append('div').attr('class', 'tr collapsed').attr('id', 'export_box_filename');
-    tr.append('div').attr('class', 'td').text('File Name:');
+    tr.append('div').attr('class', 'td').text('Folder Name:');
     tr.append('div').attr('class', 'td').append('input')
         .attr('class', 'okit-input')
         .attr('id', 'git_repository_filename')
@@ -168,7 +168,7 @@ function generateTerraform(results) {
     }
 }
 function handleGenerateAnsibleOption(e) {
-    $(jqId('modal_dialog_title')).text('Select Option to Export Ansible Files');
+    $(jqId('modal_dialog_title')).text(' Export Ansible');
     $(jqId('modal_dialog_body')).empty();
     $(jqId('modal_dialog_footer')).empty();
     let table = d3.select(d3Id('modal_dialog_body')).append('div').append('div')
@@ -176,7 +176,7 @@ function handleGenerateAnsibleOption(e) {
         .attr('class', 'table okit-table okit-modal-dialog-table');
     let tbody = table.append('div').attr('class', 'tbody');
     let tr = tbody.append('div').attr('class', 'tr');
-    tr.append('div').attr('class', 'td').text('Select Export Option:');
+    tr.append('div').attr('class', 'td').text('Destination:');
 
     div = tr.append('div')
         .attr('class', 'okit-horizontal-radio');
@@ -207,11 +207,11 @@ function handleGenerateAnsibleOption(e) {
         });
     div.append('label')
         .attr('for', 'export_ansible_repo')
-        .text('Git Repository');
+        .text('Git');
 
 
     tr = tbody.append('div').attr('class', 'tr collapsed').attr('id', 'export_box_repo');
-    tr.append('div').attr('class', 'td').text('Git Repository URL:');
+    tr.append('div').attr('class', 'td').text('Repository:');
     tr.append('div').attr('class', 'td').append('select')
         .attr('id', 'git_repository')
         .append('option')
@@ -221,11 +221,11 @@ function handleGenerateAnsibleOption(e) {
     let git_repository_filename_select = d3.select(d3Id('git_repository'));
 
     for (let git_setting of okitOciConfig.settings) {
-        git_repository_filename_select.append('option').attr('value', git_setting['url']).text(git_setting['label']);
+        git_repository_filename_select.append('option').attr('value', git_setting['url']+'*'+git_setting['branch']).text(git_setting['label']);
     }
 
     tr = tbody.append('div').attr('class', 'tr collapsed').attr('id', 'export_box_filename');
-    tr.append('div').attr('class', 'td').text('File Name:');
+    tr.append('div').attr('class', 'td').text('Folder Name:');
     tr.append('div').attr('class', 'td').append('input')
         .attr('class', 'okit-input')
         .attr('id', 'git_repository_filename')

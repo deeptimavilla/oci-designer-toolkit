@@ -20,7 +20,7 @@
                 $.ajax({
                     type: 'get',
                     url: "{{ url_for('static', filename='okit/palette/' + palette_icon['svg']) }}",
-                    dataType: 'xml',Ansible
+                    dataType: 'xml',
                     success: function(xml) {
                         console.info("{{ 'Loaded ' + palette_icon['svg'] }}");
                         let g = $(xml).find("g");

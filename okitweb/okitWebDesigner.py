@@ -264,12 +264,13 @@ def generate(language):
             logger.info('Zipfile : {0:s}'.format(str(zipname)))
 
             if gitpush_flag:
-                git_url = request.json['git_repository']
+                get_selection_details = request.json['git_repository']
+                git_url, git_branch = get_selection_details.split('*')
                 git_file_name = request.json['git_repository_filename']
                 git_commit_msg = request.json['git_repository_commitmsg']
                 destination = '/okit/okitweb/static/okit/templates/tmpgit'
 
-                repo = Repo.clone_from(git_url, destination, branch='master')
+                repo = Repo.clone_from(git_url, destination, branch=git_branch, no_single_branch=True)
                 repo.remotes.origin.pull()
 
                 copyfrom = destination_dir+'/'+language
@@ -287,12 +288,14 @@ def generate(language):
 
                 repo.index.add(copyto)
                 repo.index.commit("commit changes from okit:" + git_commit_msg)
-                origin = repo.remote('origin')
-                origin.push()
+                #origin = repo.remote('origin')
+                #origin.push(git_branch)
+                repo.remotes.origin.push(git_branch)
 
                 os.system("rm -rf " + destination)
                 shutil.rmtree(destination_dir)
-                return language.capitalize()+" template upload to GIT Repository successfully.."
+
+                return language.capitalize()+" files successfully uploaded to GIT Repository"
             shutil.rmtree(destination_dir)
             filename = os.path.split(zipname)
             logger.info('Split Zipfile : {0:s}'.format(str(filename)))
